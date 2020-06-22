@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>用户页面</title>
+</head>
+<body>
+<form method="post" action="/user/findByName">
+    <table border="1" width="70%">
+        <tr>
+            <td colspan="6">
+                <a href="../edit.html">新增</a>
+                <input type="text" name="username">
+                <input type="submit" value="查询">
+            </td>
+        </tr>
+        <tr>
+            <!--<th>序号</th>-->
+            <th>编号</th>
+            <th>用户名</th>
+            <th>邮箱</th>
+            <th>电话</th>
+            <th>状态</th>
+            <th>部门</th>
+        </tr>
+        <tr th:each="user,stat:${list}">
+            <td th:text="${user.userid}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.phonenum}"></td>
+            <td th:text="${user.state.getSname()}"></td>
+            <td th:text="${user.tb_dept.getDname()}"></td>
+            <td>
+                <a th:href="@{/user/findByid(userid=${user.userid})}">修改</a>
+                <a th:href="@{/user/delete(userid=${user.userid})}">删除</a>
+            </td>
+        </tr>
+    </table>
+</form>
+    <shiro:authenticated>
+        <a href="/logout">退出</a>
+    </shiro:authenticated>
+</body>
+</html>

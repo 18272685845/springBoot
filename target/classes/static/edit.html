@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑页面</title>
+</head>
+<body>
+    <form method="post" action="/user/add">
+        名字：<input type="text" name="username"><br>
+
+        部门：  <select name="deptid">
+                    <option value="1">科技部</option>
+                    <option value="2">销售部</option>
+                    <option value="3">市场部</option>
+                    <option value="4">人事部</option>
+                </select><br>
+        邮箱：<input type="text" name="email"><br>
+        电话：<input type="text" name="phonenum"><br>
+
+        状态：  <select name="status">
+                    <option value="1">已认证</option>
+                    <option value="2">未认证</option>
+                </select>
+        <input type="submit" value="提交"><br>
+    </form>
+</body>
+</html>

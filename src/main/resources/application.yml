@@ -1,0 +1,26 @@
+server:
+  port: 8001
+  servlet:
+    context-path: /
+
+#mysql数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/qy110
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+
+#mybatis相关配置
+mybatis:
+  type-aliases-package: com.aaa.entity
+  #指定mapper映射文件
+  mapper-locations: classpath:mapper/*.xml
+
+#控制台打印sql
+logging:
+  level:
+    com:
+      guohangyu:
+        dao: debug

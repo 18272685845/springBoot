@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guohangyu.dao.Tb_userDao">
+    <resultMap id="tbUserMap" type="com.guohangyu.entity.Tb_user" autoMapping="true">
+        <id property="userid" column="userid"></id>
+        <association property="tb_dept" javaType="com.guohangyu.entity.Tb_dept">
+            <id column="deptid" property="deptid"></id>
+            <result property="dname" column="dname"></result>
+            <result property="remark" column="remark"></result>
+        </association>
+        <association property="state" javaType="com.guohangyu.entity.State">
+            <id column="sid" property="sid"></id>
+            <result property="sname" column="sname"></result>
+        </association>
+    </resultMap>
+    <select id="findAll" resultMap="tbUserMap">
+        select u.* , d.dname ,s.sname from tb_user u,tb_dept d , state s where u.deptid=d.deptid and s.sid=u.`status`
+    </select>
+
+    <select id="findByName" resultMap="tbUserMap">
+        select u.* , d.dname  ,s.sname from tb_user u,tb_dept d , state s where username like '%${username}%'and u.deptid=d.deptid and s.sid=u.`status`
+    </select>
+
+</mapper>
