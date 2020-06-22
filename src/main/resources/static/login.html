@@ -6,10 +6,12 @@
 </head>
 <body>
 <form action="/user/login" method="post">
-    用户名：<input type="text" name="username"><br>
-    密码：<input type="text" name="password">
-
-    <input type="submit" name="登陆">
+    用户名：<input type="text" name="username" style="margin-top: 10px"><br>
+    密码：<input type="text" name="password" style="margin-top: 10px"><br>
+    验证码：<input type="text" name="code" style="width: 100px" >
+    <a href="javascript:void(0)" onclick="location.reload()" >下一张</a>
+    <img src="/user/getImage" alt=""><br>
+    <input type="submit" name="登陆"><br>
 </form>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.guohangyu.controller;
 
 import com.guohangyu.entity.Tb_user;
 import com.guohangyu.service.Tb_userService;
+import com.guohangyu.util.CaptchaCodeUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -9,9 +10,11 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +24,24 @@ public class Tb_userController {
 
     @Autowired
     private Tb_userService tb_userService;
+
+    /**
+     * 验证码方法
+     * @return
+     */
+    @RequestMapping("/getImage")
+    public void getImage(HttpServletResponse response, HttpSession session ) throws IOException {
+        //设置验证码长度
+        String code= new CaptchaCodeUtil().randomStr(4);
+        //生成图片
+        CaptchaCodeUtil captchaCodeUtil = new CaptchaCodeUtil(116, 36, 4, 10, code);
+        //存入session
+        session.setAttribute("code",code);
+        System.out.println(code);
+        response.setContentType("/image/png");
+        //响应浏览器
+        captchaCodeUtil.write(response.getOutputStream());
+    }
 
     @RequestMapping("/findAll")
     public String findAll(Map map){
@@ -64,29 +85,37 @@ public class Tb_userController {
     }
 
     @RequestMapping("/login")
-    public String login(Tb_user users){
-        Subject currentUser = SecurityUtils.getSubject();
-        //当前用户还没有认证；没有登陆
-        if (!currentUser.isAuthenticated()) {
-            //用户名密码的号牌信息  从表单中传递过来的用户名 和 密码
-            UsernamePasswordToken token = new UsernamePasswordToken(users.getUsername(),users.getPassword());
-            //记住我
-            token.setRememberMe(true);
-            try {
-                //调用登陆方法 将号牌委托给---->安全管理器---->进入认证器，调用Realm获取用户信息进行匹配
-                currentUser.login(token);
-                return "redirect:findAll";
-            } catch (UnknownAccountException uae) {//账号不存在
-                System.out.println("账号不存在");
-            } catch (IncorrectCredentialsException ice) {//密码不匹配
-                System.out.println("密码不匹配");
-            } catch (LockedAccountException lae) {//账户锁定
-                System.out.println("账户锁定");
+    public String login(Tb_user users,HttpSession session ){
+        System.out.println(users.getCode());
+        String codes = (String)session.getAttribute("code");
+        if (codes.equalsIgnoreCase(users.getCode())){
+            Subject currentUser = SecurityUtils.getSubject();
+            //当前用户还没有认证；没有登陆
+            if (!currentUser.isAuthenticated()) {
+                //用户名密码的号牌信息  从表单中传递过来的用户名 和 密码
+                UsernamePasswordToken token = new UsernamePasswordToken(users.getUsername(),users.getPassword());
+                //记住我
+                token.setRememberMe(true);
+                try {
+                    //调用登陆方法 将号牌委托给---->安全管理器---->进入认证器，调用Realm获取用户信息进行匹配
+                    currentUser.login(token);
+                    return "redirect:findAll";
+                } catch (UnknownAccountException uae) {//账号不存在
+                    System.out.println("账号不存在");
+                } catch (IncorrectCredentialsException ice) {//密码不匹配
+                    System.out.println("密码不匹配");
+                } catch (LockedAccountException lae) {//账户锁定
+                    System.out.println("账户锁定");
+                } catch (AuthenticationException ae) {
+                    System.out.println("认证异常");
+                }
             }
-            catch (AuthenticationException ae) {
-                System.out.println("认证异常");
-            }
+        }else {
+            System.out.println("验证码错误");
         }
+
+
+
 
         return "error";
     }

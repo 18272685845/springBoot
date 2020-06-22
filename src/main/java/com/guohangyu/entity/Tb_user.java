@@ -26,5 +26,7 @@ public class Tb_user {
 
     private State state;
 
+    private String code;
+
 
 }
